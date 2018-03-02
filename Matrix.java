@@ -55,6 +55,27 @@ abstract class Matrix implements BasicMatrix {
 		}
 		return result;
 	}
+	
+	// Multiplies current matrix with given matrix
+	// Throws IllegalArgumentException if the columns of one don't match with other's
+	// 		columns
+	protected void multiply(Matrix other, Matrix res) {
+		if (columns != other.rows) {
+			throw new IllegalArgumentException("Matrix should have " + columns + " rows");
+		}
+		Matrix transposedOther = transpose(other);
+		for (int i = 0; i < res.rows; i++) {
+			List<Double> temp = new ArrayList<>();
+			for (int j = 0; j < transposedOther.rows; j++) {
+				double sum = 0.0;
+				for (int k = 0; k < transposedOther.columns; k++) {
+					sum += (rowMatrix.get(i).get(k) * transposedOther.rowMatrix.get(j).get(k));
+				}
+				temp.add(sum);
+			}
+			res.rowMatrix.add(temp);
+		}
+	}
     
 	// Prints the matrix
     public void printMatrix() {
@@ -94,6 +115,19 @@ abstract class Matrix implements BasicMatrix {
 	}
 	
 	protected abstract Matrix transpose(Matrix matrix);
+	
+	// Returns the transpose of the given matrix
+	protected void transpose(Matrix matrix, Matrix transpose) {
+		for (int i = 0; i < matrix.columns; i++) {
+			transpose.rowMatrix.add(new ArrayList<>());
+		}
+		
+		for (int i = 0; i < columns; i++) {
+			for (int j = 0; j < rows; j++) {
+				transpose.rowMatrix.get(i).add(matrix.rowMatrix.get(j).get(i));
+			}
+		}
+	}
 	
 	// Returns the column span
 	public List<List<Double>> getColSpan() {
@@ -228,4 +262,35 @@ abstract class Matrix implements BasicMatrix {
 		}
     	return -1;
     }
+	
+	// Checks if the matrix is onto
+	public boolean isOnto() {
+		Matrix check = getReducedMatrix();
+		for (List<Double> row: check.rowMatrix) {
+			boolean flag = false;
+			for (double val: row) {
+				if (val != 0) {
+					flag = true;
+					break;
+				}
+			}
+			if (!flag) return false;
+		}
+		return true;
+	}
+	
+	// Checks if the matrix is one-to-one
+	public boolean isOneToOne() {
+		Matrix check = getReducedMatrix();
+		int count = 0;
+		for (List<Double> row: check.rowMatrix) {
+			for (double val: row) {
+				if (val != 0) {
+					count++;
+					break;
+				}
+			}
+		}
+		return count == columns;
+	}
 }

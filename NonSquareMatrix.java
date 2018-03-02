@@ -71,36 +71,14 @@ public class NonSquareMatrix extends Matrix implements BasicMatrix {
 	// Returns the transpose of the given matrix
 	protected Matrix transpose(Matrix matrix) {
 		Matrix transpose = new NonSquareMatrix(matrix.columns, matrix.rows);
-		for (int i = 0; i < matrix.columns; i++) {
-			transpose.rowMatrix.add(new ArrayList<>());
-		}
-		
-		for (int i = 0; i < columns; i++) {
-			for (int j = 0; j < rows; j++) {
-				transpose.rowMatrix.get(i).add(matrix.rowMatrix.get(j).get(i));
-			}
-		}
+		transpose(matrix, transpose);
 		return transpose;
 	}
 	
 	// Multiplies current matrix with given matrix
 	public Matrix multiply(Matrix other) {
-		if (columns != other.rows) {
-			throw new IllegalArgumentException("Matrix should have " + columns + " rows");
-		}
-		Matrix transposedOther = transpose(other);
 		Matrix res = new NonSquareMatrix(rows, other.columns);
-		for (int i = 0; i < res.rows; i++) {
-			List<Double> temp = new ArrayList<>();
-			for (int j = 0; j < transposedOther.rows; j++) {
-				double sum = 0.0;
-				for (int k = 0; k < transposedOther.columns; k++) {
-					sum += (rowMatrix.get(i).get(k) * transposedOther.rowMatrix.get(j).get(k));
-				}
-				temp.add(sum);
-			}
-			res.rowMatrix.add(temp);
-		}
+		multiply(other, res);
 		return res;
 	}
 
@@ -109,12 +87,15 @@ public class NonSquareMatrix extends Matrix implements BasicMatrix {
 		if (columns < rows) {
 			return false;
 		}
-		return true;
+		return super.isOnto();
 	}
 
 	// Checks if the matrix is one-to-one
 	public boolean isOneToOne() {
-		return false;
+		if (columns > rows) {
+			return false;
+		}
+		return super.isOneToOne();
 	}
 
 	// Clones the matrix

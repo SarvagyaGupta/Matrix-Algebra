@@ -111,31 +111,13 @@ public class SquareMatrix extends Matrix implements BasicMatrix {
 
 	// Multiply two matrices together
 	public Matrix multiply(Matrix other) {
-		if (columns != other.rows) {
-			throw new IllegalArgumentException("Matrix should have " + columns + " rows");
-		}
-		Matrix transposedOther = transpose(other);
-		Matrix res = new NonSquareMatrix(rows, other.columns);
-		for (int i = 0; i < res.rows; i++) {
-			List<Double> temp = new ArrayList<>();
-			for (int j = 0; j < transposedOther.rows; j++) {
-				double sum = 0.0;
-				for (int k = 0; k < transposedOther.columns; k++) {
-					sum += (rowMatrix.get(i).get(k) * transposedOther.rowMatrix.get(j).get(k));
-				}
-				temp.add(sum);
-			}
-			res.rowMatrix.add(temp);
-		}
+		Matrix res;
+		if (rows == other.columns)
+			res = new SquareMatrix(rows);
+		else
+			res = new NonSquareMatrix(rows, other.columns);
+		multiply(other, res);
 		return res;
-	}
-
-	public boolean isOnto() {
-		return false;
-	}
-
-	public boolean isOneToOne() {
-		return false;
 	}
 
 	protected Matrix cloneMatrix(Matrix toClone) {
@@ -143,6 +125,8 @@ public class SquareMatrix extends Matrix implements BasicMatrix {
 	}
 
 	protected Matrix transpose(Matrix matrix) {
-		return null;
+		Matrix transpose = new SquareMatrix(matrix.rows);
+		transpose(matrix, transpose);
+		return transpose;
 	}
 }
