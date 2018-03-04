@@ -1,27 +1,58 @@
 import java.util.*;
 
-public class SquareMatrix extends Matrix implements BasicMatrix {	
-	public SquareMatrix(int size, boolean... bs) {
-		super(size, size, bs);
+public class SquareMatrix extends Matrix implements BasicMatrix {
+	public SquareMatrix(int size) {
+		super(size, size);
 	}
 	
 	// Returns the size of the square matrix
 	public int getSize() {
 		return rows;
 	}
+	
+	// Returns the homogeneous solution of a matrix
+    public List<Double> solveHomogeneous() {
+    	List<Double> toSolve = new ArrayList<>();
+    	for (int i = 0; i < rows; i++) {
+    		toSolve.add(0.0);
+    	}
+    	return solveSystem(toSolve);
+    }
 
 	// Solves the given system of equations
-	public List<String> solveSystem(List<Double> toSolve) {
-		return null;
+	public List<Double> solveSystem(List<Double> toSolve) {
+		if (toSolve.size() != rows) 
+			throw new InputMismatchException("Enter a list with size: " + rows);
+		
+		List<Double> res = new ArrayList<>();
+		double det = determinant();
+		if (det == 0)
+			throw new IllegalStateException("Determinant is zero. Use NonSquareMatrix");
+		
+		Matrix transpose = transpose();
+		List<List<Double>> matrix = transpose.rowMatrix;
+		for (int i = 0; i < rows; i++) {
+			List<Double> row = matrix.remove(i);
+			matrix.add(i, toSolve);
+			res.add(round(determinant(transpose(transpose)) / det));
+			matrix.remove(i);
+			matrix.add(i, row);
+		}
+		return res;
 	}
 	
-	// Returns the determinant using row reduction
+	// Finds the determinant of the matrix
 	public double determinant() {
+		return determinant(this);
+	}
+	
+	// Returns the determinant of the given matrix using row reduction
+	private double determinant(Matrix toFind) {
 		if (rows != columns) {
 			throw new IllegalStateException("Matrix is not square. There is no determinant");
 		}
 		
-		Matrix matrix = cloneMatrix(this);
+		Matrix matrix = cloneMatrix(toFind);
     	int pos = 0;
     	int sign = 1;
         for (int i = 0; i < matrix.rows - 1 && pos < matrix.columns; i++) {
@@ -120,10 +151,14 @@ public class SquareMatrix extends Matrix implements BasicMatrix {
 		return res;
 	}
 
+	// Clone the matrix
 	protected Matrix cloneMatrix(Matrix toClone) {
-		return null;
+		Matrix res = new SquareMatrix(toClone.rows);
+		super.cloneMatrix(toClone, res);
+		return res;
 	}
 
+	// Transpose the matrix
 	protected Matrix transpose(Matrix matrix) {
 		Matrix transpose = new SquareMatrix(matrix.rows);
 		transpose(matrix, transpose);

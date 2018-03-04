@@ -5,8 +5,6 @@ public interface BasicMatrix {
 	public Matrix addMatrix(Matrix other);
 	public Matrix multiply(Matrix other);
 	public Matrix getReducedMatrix();
-	public List<String> solveHomogeneous();
-	public List<String> solveSystem(List<Double> toSolve);
 	public boolean isOnto();
 	public boolean isOneToOne();
 	public boolean isLinearlyIndependent();

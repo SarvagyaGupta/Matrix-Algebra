@@ -8,36 +8,64 @@ abstract class Matrix implements BasicMatrix {
 	// Constructs a matrix with the given row or column
     // If a boolean value is given, the user is prompted to fill the array
     // Throws IllegalArgumentException if (row <= 0 || col <= 0)
-	public Matrix(int row, int col, boolean ...bs) {
-		if (row <= 0 || col <= 0) throw new IllegalArgumentException();
-		rows = row;
-		columns = col;
-        rowMatrix = new ArrayList<>();
-		if (bs != null) makeMatrix();
-	}
-	
-	// Prompts the user to fill the new Matrix
-	private void makeMatrix() {
-        Scanner console = new Scanner(System.in);
+	public Matrix() {
+		Scanner console = new Scanner(System.in);
+		rows = getVal(console, "rows");
+		columns = getVal(console, "columns");
         for (int i = 0; i < rows; i++) {
             List<Double> temp = new ArrayList<>();
             System.out.println("Currently filling row " + (i + 1));
             for (int j = 0; j < columns; j++) {
                 System.out.print("Entry " + (j + 1) + ": ");
-                temp.add(console.nextDouble());
+                double val = console.nextDouble();
+                temp.add(val);
             } 
             rowMatrix.add(temp);
         }
         console.close();
-    }
+	}
+	
+	private int getVal(Scanner console, String type) {
+		System.out.print("Enter the number of " + type);
+		int res = console.nextInt();
+		while (res < 1) {
+			System.out.print("Invalid entry. Enter the number of " + type);
+			res = console.nextInt();
+		}
+		return res;
+	}
+
+	public Matrix(int row, int col) {
+		rows = row;
+		columns = col;
+		rowMatrix = new ArrayList<>();
+		for (int i = 0; i < rows; i++) {
+			List<Double> temp = new ArrayList<>();
+			for (int j = 0; j < columns; j++) {
+				temp.add(0.0);
+			}
+			rowMatrix.add(temp);
+		}
+	}
 	
 	// Returns the passed value rounded to 2 digits
 	public double round(double value) {
 		return Math.round(value * 100.0) / 100.0;
 	}
+	
+	// Clones and returns the given matrix
+	protected abstract Matrix cloneMatrix(Matrix toClone);
     
     // Clones and returns the given matrix
-    protected abstract Matrix cloneMatrix(Matrix toClone);
+    protected void cloneMatrix(Matrix toClone, Matrix res) {
+    	for (List<Double> row: toClone.rowMatrix) {
+    		List<Double> temp = new ArrayList<>();
+    		for (double val: row) {
+    			temp.add(val);
+    		}
+    		res.rowMatrix.add(temp);
+    	}
+    }
 	
     // Takes in a matrix and returns the sum of the itself and the other matrix
     // Throws IllegalArgumentException if (other.columns != columns || other.rows != rows)
@@ -94,17 +122,8 @@ abstract class Matrix implements BasicMatrix {
         }
         System.out.println();
     }
-    
-    // Returns the homogeneous solution of a matrix
-    public List<String> solveHomogeneous() {
-    	List<Double> toSolve = new ArrayList<>();
-    	for (int i = 0; i < rows; i++) {
-    		toSolve.add(0.0);
-    	}
-    	return solveSystem(toSolve);
-    }
-    
-    // Checks if the matrix has linearly independent columns
+
+	// Checks if the matrix has linearly independent columns
     public boolean isLinearlyIndependent() {
     	return isOneToOne();
     }

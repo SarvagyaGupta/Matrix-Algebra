@@ -1,9 +1,18 @@
 import java.util.*;
 
-public class NonSquareMatrix extends Matrix implements BasicMatrix {
-    public NonSquareMatrix(int row, int col, boolean... bs) {
-		super(row, col, bs);
+public class NonSquareMatrix extends Matrix implements BasicMatrix {	
+    public NonSquareMatrix(int row, int col) {
+		super(row, col);
 	}
+    
+    // Returns the homogeneous solution of a matrix
+    public List<String> solveHomogeneous() {
+    	List<Double> toSolve = new ArrayList<>();
+    	for (int i = 0; i < rows; i++) {
+    		toSolve.add(0.0);
+    	}
+    	return solveSystem(toSolve);
+    }
 	
 	// Solves a system of equations
 	public List<String> solveSystem(List<Double> toSolve) {
@@ -100,6 +109,8 @@ public class NonSquareMatrix extends Matrix implements BasicMatrix {
 
 	// Clones the matrix
 	protected Matrix cloneMatrix(Matrix toClone) {
-		return null;
+		Matrix res = new NonSquareMatrix(toClone.columns, toClone.rows);
+		super.cloneMatrix(toClone, res);
+		return res;
 	}
 }

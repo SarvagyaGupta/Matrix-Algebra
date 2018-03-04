@@ -2,10 +2,11 @@ import java.util.*;
 
 public class MatrixMain {
     public static void main(String[] args) {
-       /*Matrix curr = new Matrix();
-       Matrix other = new Matrix();
+       SquareMatrix curr = new SquareMatrix(3);
+       // Matrix other = new Matrix();
        List<Double> list = new ArrayList<Double>();
        list.add(9.0);
+       list.add(-5.0);
        list.add(-5.0);
        System.out.println("Current Matrix:");
        curr.printMatrix();
@@ -21,16 +22,16 @@ public class MatrixMain {
        System.out.println("Transposed Matrix:");
        curr.transpose().printMatrix();
        System.out.println("Determinant: " + curr.determinantSlow());
-       System.out.println("Determinant: " + curr.determinantFast());
-       Matrix multiplied1 = curr.multiply(other);
+       System.out.println("Determinant: " + curr.determinant());
+       /*Matrix multiplied1 = curr.multiply(other);
        Matrix multiplied2 = other.multiply(curr);
        multiplied1.addMatrix(multiplied1.makeIdentity(4));
        multiplied2.addMatrix(multiplied1.makeIdentity(3));
        System.out.println("Determinant: " + multiplied1.determinantFast());
        System.out.println("Determinant: " + multiplied2.determinantFast());
        System.out.println("Multiplied: ");
-       multiplied.printMatrix();
+       multiplied.printMatrix();*/
        System.out.println("Inverse: ");
-       curr.getInverse().printMatrix();*/
+       curr.getInverse().printMatrix();
     }
 }
