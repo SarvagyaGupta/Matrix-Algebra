@@ -1,7 +1,11 @@
 import java.util.*;
 
 public class NonSquareMatrix extends Matrix implements BasicMatrix {	
-    public NonSquareMatrix(int row, int col) {
+	public NonSquareMatrix() {
+		super();
+	}
+	
+	public NonSquareMatrix(int row, int col) {
 		super(row, col);
 	}
     

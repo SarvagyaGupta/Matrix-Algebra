@@ -1,6 +1,10 @@
 import java.util.*;
 
 public class SquareMatrix extends Matrix implements BasicMatrix {
+	public SquareMatrix() {
+		super();
+	}
+	
 	public SquareMatrix(int size) {
 		super(size, size);
 	}
@@ -34,7 +38,7 @@ public class SquareMatrix extends Matrix implements BasicMatrix {
 		for (int i = 0; i < rows; i++) {
 			List<Double> row = matrix.remove(i);
 			matrix.add(i, toSolve);
-			res.add(round(determinant(transpose(transpose)) / det));
+			res.add(determinant(transpose(transpose)) / det);
 			matrix.remove(i);
 			matrix.add(i, row);
 		}
@@ -71,7 +75,7 @@ public class SquareMatrix extends Matrix implements BasicMatrix {
         	sum *= matrix.rowMatrix.get(i).get(i);
         }
         
-        return round(sum);
+        return Math.round(sum * 100.0) / 100.0;
 	}
 	
 	// Checks whether the matrix is invertible or not

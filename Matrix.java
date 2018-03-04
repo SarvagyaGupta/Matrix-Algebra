@@ -1,3 +1,4 @@
+import java.text.*;
 import java.util.*;
 
 abstract class Matrix implements BasicMatrix {
@@ -12,6 +13,7 @@ abstract class Matrix implements BasicMatrix {
 		Scanner console = new Scanner(System.in);
 		rows = getVal(console, "rows");
 		columns = getVal(console, "columns");
+		rowMatrix = new ArrayList<>();
         for (int i = 0; i < rows; i++) {
             List<Double> temp = new ArrayList<>();
             System.out.println("Currently filling row " + (i + 1));
@@ -26,7 +28,7 @@ abstract class Matrix implements BasicMatrix {
 	}
 	
 	private int getVal(Scanner console, String type) {
-		System.out.print("Enter the number of " + type);
+		System.out.print("Enter the number of " + type + ": ");
 		int res = console.nextInt();
 		while (res < 1) {
 			System.out.print("Invalid entry. Enter the number of " + type);
@@ -48,11 +50,6 @@ abstract class Matrix implements BasicMatrix {
 		}
 	}
 	
-	// Returns the passed value rounded to 2 digits
-	public double round(double value) {
-		return Math.round(value * 100.0) / 100.0;
-	}
-	
 	// Clones and returns the given matrix
 	protected abstract Matrix cloneMatrix(Matrix toClone);
     
@@ -63,6 +60,7 @@ abstract class Matrix implements BasicMatrix {
     		for (double val: row) {
     			temp.add(val);
     		}
+    		res.rowMatrix.remove(0);
     		res.rowMatrix.add(temp);
     	}
     }
@@ -107,20 +105,29 @@ abstract class Matrix implements BasicMatrix {
     
 	// Prints the matrix
     public void printMatrix() {
-        printAnyMatrix(this);
+        printAnyMatrix(this, 5, 2);
     }
     
     // Prints the matrix passed in as a parameter
-    private void printAnyMatrix(Matrix matrix) {
+    private void printAnyMatrix(Matrix matrix, int width, int digits) {
+        DecimalFormat format = new DecimalFormat();
+        format.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
+        format.setMinimumIntegerDigits(1);
+        format.setMaximumFractionDigits(digits);
+        format.setMinimumFractionDigits(digits);
+        format.setGroupingUsed(false);
+        
         for (List<Double> list: matrix.rowMatrix) {
             for (Double entry: list) {
-            	double curr = round(entry);
-            	if (entry >= 0) System.out.print("  " + curr);
-            	else System.out.print(" " + curr);
+               String str = format.format(entry);
+               int padding = Math.max(1, width - str.length());
+               for (int k = 0; k < padding; k++)
+                  System.out.print(' ');
+               System.out.print(str);
             }
             System.out.println();
-        }
-        System.out.println();
+         }
+         System.out.println(); 
     }
 
 	// Checks if the matrix has linearly independent columns
